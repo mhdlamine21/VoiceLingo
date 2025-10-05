@@ -1,0 +1,99 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Modèles IA (trop lourds pour Git - utilisez HF Hub)
+models/
+*.pt
+*.pth
+*.bin
+*.gguf
+*.safetensors
+
+# Cache Hugging Face
+.cache/
+huggingface/
+
+# Logs
+*.log
+logs/
+voicelingo.log
+
+# Fichiers temporaires
+*.wav
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Fichiers de sortie utilisateur
+output/
+outputs/
+*.srt.bak
+
+# Config avec données sensibles
+# (config.json est versionné SANS chemins personnels)
+config.local.json
+
+# Packaging
+*.spec
+dist/
+build/
+__installer__/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Speaker WAVs (données personnelles)
+speaker_wavs/*.wav
+!speaker_wavs/.gitkeep
+
+# Fichiers de travail exclus
+CHANGELOG.md
+generate_git_history.py
