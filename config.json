@@ -1,0 +1,23 @@
+{
+  "whisper_model_size": "large-v3",
+  "whisper_device": "cpu",
+  "whisper_compute_type": "int8",
+
+  "nllb_model": "facebook/nllb-200-distilled-600M",
+
+  "tts_model": "tts_models/multilingual/multi-dataset/xtts_v2",
+  "tts_speaker_wav": "",
+
+  "enable_context_translation_ia": true,
+  "domains": ["informatique", "mathematiques", "physique", "medecine",
+               "biologie", "chimie", "economie", "general"],
+
+  "output_dir": "",
+  "default_src_lang": "auto",
+  "default_tgt_lang": "fr",
+  "default_output_mode": "srt",
+  "hf_cache_dir": "",
+
+  "api_base_url": "http://localhost:8000",
+  "max_segment_duration_hours": 1
+}
