@@ -237,7 +237,7 @@ def translate_segments_batch(segments, langue_src, langue_cible, config=None, pr
         segments_traduits.append({
             **segment,
             "translated_text": texte_final,
-            "domain":          domaine,
+            "domain": domaine,
         })
 
     return segments_traduits

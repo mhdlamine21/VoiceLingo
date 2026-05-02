@@ -13,20 +13,20 @@ CHEMIN_CONFIG = CONFIG_PATH
 
 # Valeurs par defaut garantissant un demarrage sans crash
 DEFAULTS = {
-    "whisper_model_size":   "base",
-    "whisper_device":       "cpu",
+    "whisper_model_size": "base",
+    "whisper_device": "cpu",
     "whisper_compute_type": "int8",
-    "nllb_model":           "facebook/nllb-200-distilled-600M",
-    "tts_model":            "tts_models/multilingual/multi-dataset/xtts_v2",
-    "tts_speaker_wav":      "",
-    "output_dir":           "",
+    "nllb_model": "facebook/nllb-200-distilled-600M",
+    "tts_model": "tts_models/multilingual/multi-dataset/xtts_v2",
+    "tts_speaker_wav": "",
+    "output_dir": "",
 }
 CONFIG_DEFAUT = DEFAULTS
 
 # Ensembles des parametres autorises
 VALEURS_VALIDES = {
-    "whisper_model_size":   ["tiny", "base", "small", "medium", "large-v2", "large-v3"],
-    "whisper_device":       ["cpu", "cuda"],
+    "whisper_model_size": ["tiny", "base", "small", "medium", "large-v2", "large-v3"],
+    "whisper_device": ["cpu", "cuda"],
     "whisper_compute_type": ["int8", "int8_float16", "float16", "float32"],
 }
 
@@ -46,7 +46,8 @@ def load_config():
         with open(target_path, "r", encoding="utf-8") as f:
             donnees = json.load(f)
     except (json.JSONDecodeError, IOError) as e:
-        print(f"Avertissement: Erreur de lecture de {target_path} ({e}) - utilisation des valeurs par defaut.")
+        print(
+            f"Avertissement: Erreur de lecture de {target_path} ({e}) - utilisation des valeurs par defaut.")
         return config
 
     # Validation et assainissement des entrees

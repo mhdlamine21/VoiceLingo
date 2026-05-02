@@ -70,7 +70,7 @@ class ProcessingPipeline:
             self._verifier_annulation()
 
             from video_handler import (
-                get_video_info, check_has_audio,
+                check_has_audio,
                 check_disk_space, extract_audio
             )
 

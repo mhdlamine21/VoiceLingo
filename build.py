@@ -10,7 +10,6 @@ Usage :
     python build.py --check       # Verification prealable des prerequis
 """
 
-import os
 import sys
 import subprocess
 import shutil
@@ -20,17 +19,27 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 
 # Codes couleur ANSI pour sortie console
-GREEN  = "\033[92m"
+GREEN = "\033[92m"
 YELLOW = "\033[93m"
-RED    = "\033[91m"
-RESET  = "\033[0m"
-BOLD   = "\033[1m"
+RED = "\033[91m"
+RESET = "\033[0m"
+BOLD = "\033[1m"
 
 
-def log_ok(msg):   print(f"{GREEN}  [OK]  {msg}{RESET}")
-def log_warn(msg): print(f"{YELLOW}  [WARN]  {msg}{RESET}")
-def log_err(msg):  print(f"{RED}  [ERR]  {msg}{RESET}")
-def log_info(msg): print(f"        {msg}")
+def log_ok(msg):
+    print(f"{GREEN}  [OK]  {msg}{RESET}")
+
+
+def log_warn(msg):
+    print(f"{YELLOW}  [WARN]  {msg}{RESET}")
+
+
+def log_err(msg):
+    print(f"{RED}  [ERR]  {msg}{RESET}")
+
+
+def log_info(msg):
+    print(f"        {msg}")
 
 
 # Verifications des prerequis
@@ -67,7 +76,7 @@ def check_dependencies() -> bool:
 
     # Module graphique tkinter
     try:
-        import tkinter
+        import tkinter  # noqa: F401
         log_ok("tkinter operationnel")
     except ImportError:
         log_err("tkinter manquant dans l'environnement Python")
@@ -136,9 +145,9 @@ def generate_spec(onefile: bool = False) -> str:
         "pytest",
     ]
 
-    datas_str  = "\n    ".join(f"('{s}', '{d}')," for s, d in datas)
+    datas_str = "\n    ".join(f"('{s}', '{d}')," for s, d in datas)
     hidden_str = "\n    ".join(f"'{h}'," for h in hidden_imports)
-    excl_str   = "\n    ".join(f"'{e}'," for e in excludes)
+    excl_str = "\n    ".join(f"'{e}'," for e in excludes)
 
     icon_path = ROOT / "assets" / "icons" / "logo.ico"
     icon_line = f"icon=r'{icon_path}'," if icon_path.exists() else "# icon='logo.ico',"
@@ -229,7 +238,8 @@ coll = COLLECT(
 def build(onefile: bool = False) -> None:
     """Compile l'application VoiceLingo."""
     print(f"\n{BOLD}Compilation VoiceLingo{RESET}")
-    print(f"  Mode   : {'--onefile (Fichier unique)' if onefile else '--onedir (Repertoire complet dist/VoiceLingo/)'}")
+    print(
+        f"  Mode   : {'--onefile (Fichier unique)' if onefile else '--onedir (Repertoire complet dist/VoiceLingo/)'}")
     print(f"  Racine : {ROOT}\n")
 
     spec_content = generate_spec(onefile)

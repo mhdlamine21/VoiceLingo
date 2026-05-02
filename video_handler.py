@@ -62,11 +62,11 @@ def get_video_info(chemin_video):
         format_court = format_nom[:10]
 
     return {
-        "name":         os.path.basename(chemin_video),
-        "duration":     duree_secondes,
+        "name": os.path.basename(chemin_video),
+        "duration": duree_secondes,
         "duration_str": duree_str,
-        "size_mb":      taille_mo,
-        "format":       format_court,
+        "size_mb": taille_mo,
+        "format": format_court,
     }
 
 
@@ -108,11 +108,11 @@ def check_disk_space(chemin_video, dossier_sortie):
     espace_disponible = shutil.disk_usage(dossier_sortie).free
 
     return {
-        "ok":                espace_disponible >= espace_necessaire,
-        "necessaire_mo":     round(espace_necessaire / (1024 * 1024), 1),
-        "disponible_mo":     round(espace_disponible / (1024 * 1024), 1),
-        "needed_gb":         round(espace_necessaire / (1024 * 1024 * 1024), 4),
-        "available_gb":      round(espace_disponible / (1024 * 1024 * 1024), 4),
+        "ok": espace_disponible >= espace_necessaire,
+        "necessaire_mo": round(espace_necessaire / (1024 * 1024), 1),
+        "disponible_mo": round(espace_disponible / (1024 * 1024), 1),
+        "needed_gb": round(espace_necessaire / (1024 * 1024 * 1024), 4),
+        "available_gb": round(espace_disponible / (1024 * 1024 * 1024), 4),
     }
 
 
@@ -128,7 +128,7 @@ def extract_audio(chemin_video, chemin_sortie):
         "-vn",                  # pas de video dans la sortie
         "-ar", "16000",         # 16000 Hz = 16kHz
         "-ac", "1",             # 1 canal = mono
-        "-acodec", "pcm_s16le", # format WAV standard
+        "-acodec", "pcm_s16le",  # format WAV standard
         chemin_sortie
     ]
 

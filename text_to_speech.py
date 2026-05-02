@@ -5,7 +5,6 @@ Description: Genere une piste audio doublee a partir du texte des sous-titres tr
 """
 
 import os
-import tempfile
 
 
 def synthesize_speech(segments, langue, chemin_sortie, config=None):

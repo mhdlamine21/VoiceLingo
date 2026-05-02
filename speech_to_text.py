@@ -75,7 +75,7 @@ def _est_hallucination(texte):
     if len(mots) >= 4:
         # si les 4 premiers mots se repetent
         moitie = len(mots) // 2
-        if mots[:moitie] == mots[moitie:moitie*2]:
+        if mots[:moitie] == mots[moitie:moitie * 2]:
             return True
 
     return False
@@ -87,9 +87,9 @@ def _transcrire_tranche(modele, chemin_audio, langue_src, config):
     """
     # parametres de qualite maximale
     options = {
-        "beam_size":    5,
-        "best_of":      5,
-        "vad_filter":   True,        # filtre les silences avec Silero VAD
+        "beam_size": 5,
+        "best_of": 5,
+        "vad_filter": True,        # filtre les silences avec Silero VAD
         "word_timestamps": True,     # timestamps par mot (pas par segment)
         "condition_on_previous_text": True,
     }
@@ -113,9 +113,9 @@ def _transcrire_tranche(modele, chemin_audio, langue_src, config):
         if hasattr(segment, "words") and segment.words:
             for mot in segment.words:
                 tous_les_mots.append({
-                    "word":  mot.word,
+                    "word": mot.word,
                     "start": mot.start,
-                    "end":   mot.end,
+                    "end": mot.end,
                 })
 
     return tous_les_mots, langue_detectee
@@ -198,7 +198,7 @@ def transcribe(chemin_audio, langue_src="auto", config=None, progress_cb=None):
             # ajuster les timestamps avec le decalage
             for mot in mots_tranche:
                 mot["start"] += debut
-                mot["end"]   += debut
+                mot["end"] += debut
 
             tous_les_mots.extend(mots_tranche)
             langue_detectee = langue

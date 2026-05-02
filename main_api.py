@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from config_manager import load_config
@@ -72,7 +72,7 @@ def health_check():
         "author": "Mouhamadou Lamine Niang",
         "year": "2026",
         "version": "1.0.0",
-        "status":  "running",
+        "status": "running",
         "active_jobs": len(_jobs),
     }
 
@@ -95,18 +95,18 @@ def process_video(req: ProcessVideoRequest, background_tasks: BackgroundTasks):
     now = time.time()
 
     job_data = {
-        "job_id":         job_id,
-        "status":         "pending",
-        "progress":       0,
-        "current_step":   "En attente de prise en charge",
-        "domain":         None,
-        "output_file":    None,
-        "error":          None,
-        "duration_sec":   None,
+        "job_id": job_id,
+        "status": "pending",
+        "progress": 0,
+        "current_step": "En attente de prise en charge",
+        "domain": None,
+        "output_file": None,
+        "error": None,
+        "duration_sec": None,
         "total_segments": None,
-        "created_at":     now,
-        "updated_at":     now,
-        "_output_dir":    os.path.abspath(output_dir),
+        "created_at": now,
+        "updated_at": now,
+        "_output_dir": os.path.abspath(output_dir),
     }
 
     with _jobs_lock:
@@ -166,7 +166,7 @@ def cancel_job(job_id: str):
         pipeline.cancel()
 
     with _jobs_lock:
-        _jobs[job_id]["status"]     = "cancelled"
+        _jobs[job_id]["status"] = "cancelled"
         _jobs[job_id]["updated_at"] = time.time()
 
     return {"message": f"Job {job_id} annule avec succes."}
@@ -190,22 +190,22 @@ def _run_job(job_id: str, req: ProcessVideoRequest, output_dir: str) -> None:
     start = time.time()
 
     cfg = load_config()
-    cfg["whisper_model_size"]   = req.whisper_model_size
-    cfg["whisper_device"]       = req.whisper_device
-    cfg["nllb_model"]           = req.nllb_model
+    cfg["whisper_model_size"] = req.whisper_model_size
+    cfg["whisper_device"] = req.whisper_device
+    cfg["nllb_model"] = req.nllb_model
 
     pipeline = ProcessingPipeline(cfg)
 
     with _jobs_lock:
-        _jobs[job_id]["status"]    = "running"
+        _jobs[job_id]["status"] = "running"
         _jobs[job_id]["_pipeline"] = pipeline
         _jobs[job_id]["updated_at"] = time.time()
 
     def on_progress(pct: int, label: str) -> None:
         with _jobs_lock:
-            _jobs[job_id]["progress"]     = pct
+            _jobs[job_id]["progress"] = pct
             _jobs[job_id]["current_step"] = label
-            _jobs[job_id]["updated_at"]   = time.time()
+            _jobs[job_id]["updated_at"] = time.time()
             if "domaine" in label.lower():
                 for dk in ["informatique", "mathematiques", "physique",
                            "medecine", "biologie", "economie", "general"]:
@@ -216,14 +216,14 @@ def _run_job(job_id: str, req: ProcessVideoRequest, output_dir: str) -> None:
     def on_done(success: bool, result: str) -> None:
         with _jobs_lock:
             _jobs[job_id]["duration_sec"] = round(time.time() - start, 1)
-            _jobs[job_id]["updated_at"]   = time.time()
+            _jobs[job_id]["updated_at"] = time.time()
             if success:
-                _jobs[job_id]["status"]      = "done"
+                _jobs[job_id]["status"] = "done"
                 _jobs[job_id]["output_file"] = result
-                _jobs[job_id]["progress"]    = 100
+                _jobs[job_id]["progress"] = 100
             else:
                 _jobs[job_id]["status"] = "error"
-                _jobs[job_id]["error"]  = result
+                _jobs[job_id]["error"] = result
 
     pipeline.run(
         video_path=req.video_path,

@@ -5,15 +5,13 @@ Description: Initialise l'environnement d'execution, verifie la presence de FFmp
 """
 
 # Configuration de l'environnement OpenMP pour eviter les conflits d'allocations de threads sur Windows
+from ui import VoiceLingoApp
+import subprocess
+from tkinter import messagebox
+import tkinter as tk
 import os
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 os.environ.setdefault("OMP_NUM_THREADS", "1")
-
-import tkinter as tk
-from tkinter import messagebox
-import subprocess
-
-from ui import VoiceLingoApp
 
 
 def verifier_ffmpeg() -> bool:
@@ -50,7 +48,7 @@ def main():
         return
 
     root = tk.Tk()
-    app = VoiceLingoApp(root)
+    VoiceLingoApp(root)
     root.mainloop()
 
 

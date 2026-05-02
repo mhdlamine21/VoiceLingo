@@ -7,13 +7,11 @@ Description: Interface ergonomique Tkinter a 3 panneaux avec gestion de theme so
 """
 
 import os
-import re
-import sys
 import webbrowser
 import threading
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from typing import Optional, Dict, Any
+from typing import Optional
 
 from config_manager import load_config, save_config
 from processor import ProcessingPipeline
@@ -112,12 +110,12 @@ LANGUES_CIBLE = [
 CODES_LANGUES = {lbl: code for lbl, code in LANGUES_SOURCE + LANGUES_CIBLE}
 
 ETAPES_PIPELINE = [
-    ("Analyse video",         0,  5),
-    ("Extraction audio",      5, 20),
+    ("Analyse video", 0, 5),
+    ("Extraction audio", 5, 20),
     ("Transcription Whisper", 20, 40),
-    ("Traduction NLLB",       40, 62),
-    ("Generation SRT",        62, 78),
-    ("Finalisation",          78, 100),
+    ("Traduction NLLB", 40, 62),
+    ("Generation SRT", 62, 78),
+    ("Finalisation", 78, 100),
 ]
 
 
@@ -295,7 +293,8 @@ class VoiceLingoApp:
         color_wave = "#2dd4bf" if self.is_dark_mode else "#14b8a6"
 
         c.create_oval(cx - r, cy - r, cx + r, cy + r, outline=color_globe, width=2)
-        c.create_polygon(cx - r * 0.7, cy + r * 0.5, cx - r * 0.9, cy + r * 0.95, cx - r * 0.3, cy + r * 0.8, fill=color_globe, outline="")
+        c.create_polygon(cx - r * 0.7, cy + r * 0.5, cx - r * 0.9, cy + r * 0.95,
+                         cx - r * 0.3, cy + r * 0.8, fill=color_globe, outline="")
 
         for i in range(-3, 4):
             bx = cx + i * (size * 0.08)
@@ -835,11 +834,13 @@ class VoiceLingoApp:
         """Telecharge la video YouTube saisie via yt-dlp dans un thread daemon."""
         url = self.youtube_url_var.get().strip()
         if not url:
-            messagebox.showwarning("URL requise", "Veuillez coller une URL YouTube valide.", parent=self.fenetre)
+            messagebox.showwarning(
+                "URL requise", "Veuillez coller une URL YouTube valide.", parent=self.fenetre)
             return
 
         if not is_youtube_url(url):
-            messagebox.showerror("URL invalide", "Le format de l'URL n'est pas reconnu comme un lien YouTube.", parent=self.fenetre)
+            messagebox.showerror(
+                "URL invalide", "Le format de l'URL n'est pas reconnu comme un lien YouTube.", parent=self.fenetre)
             return
 
         self.btn_yt_dl.configure(state="disabled", text="Analyse et telechargement en cours...")
@@ -849,16 +850,19 @@ class VoiceLingoApp:
             try:
                 infos = get_video_info_youtube(url)
                 titre = infos.get("title", "video_youtube")
-                dossier_telechargement = self.config.get("output_dir") or os.path.join(os.path.expanduser("~"), "Downloads")
+                dossier_telechargement = self.config.get(
+                    "output_dir") or os.path.join(os.path.expanduser("~"), "Downloads")
                 os.makedirs(dossier_telechargement, exist_ok=True)
 
-                self.fenetre.after(0, lambda: self.lbl_yt_status.configure(text=f"Telechargement de : {titre[:45]}..."))
+                self.fenetre.after(0, lambda: self.lbl_yt_status.configure(
+                    text=f"Telechargement de : {titre[:45]}..."))
 
                 chemin_telecharge = download_video(
                     url,
                     dossier_sortie=dossier_telechargement,
                     qualite="720p",
-                    progress_cb=lambda p, m: self.fenetre.after(0, lambda: self.lbl_yt_status.configure(text=f"{m} ({p}%)"))
+                    progress_cb=lambda p, m: self.fenetre.after(
+                        0, lambda: self.lbl_yt_status.configure(text=f"{m} ({p}%)"))
                 )
 
                 def on_done():
@@ -870,10 +874,13 @@ class VoiceLingoApp:
                 self.fenetre.after(0, on_done)
 
             except Exception as e:
-                def on_err():
+                err_msg = str(e)
+
+                def on_err(msg=err_msg):
                     self.btn_yt_dl.configure(state="normal", text="Recuperer et Charger la Video")
-                    self.lbl_yt_status.configure(text=f"Erreur : {e}")
-                    messagebox.showerror("Erreur YouTube", f"Impossible de telecharger la video :\n{e}", parent=self.fenetre)
+                    self.lbl_yt_status.configure(text=f"Erreur : {msg}")
+                    messagebox.showerror(
+                        "Erreur YouTube", f"Impossible de telecharger la video :\n{msg}", parent=self.fenetre)
 
                 self.fenetre.after(0, on_err)
 
@@ -986,11 +993,11 @@ class VoiceLingoApp:
 
         self.widgets_etapes = {}
         for nom_e, deb, fin in ETAPES_PIPELINE:
-            l = tk.Frame(frame_etapes, bg=self.theme["bg_card"])
-            l.pack(fill="x", pady=2)
+            ligne_etape = tk.Frame(frame_etapes, bg=self.theme["bg_card"])
+            ligne_etape.pack(fill="x", pady=2)
 
             pt = tk.Label(
-                l,
+                ligne_etape,
                 text="○",
                 font=("Segoe UI", 10),
                 fg=self.theme["fg_subtext"],
@@ -1000,7 +1007,7 @@ class VoiceLingoApp:
             pt.pack(side="left")
 
             lb = tk.Label(
-                l,
+                ligne_etape,
                 text=nom_e,
                 font=("Segoe UI", 9),
                 fg=self.theme["fg_subtext"],
@@ -1008,7 +1015,7 @@ class VoiceLingoApp:
             )
             lb.pack(side="left", padx=(4, 0))
 
-            self.widgets_etapes[nom_e] = {"ligne": l, "point": pt, "label": lb}
+            self.widgets_etapes[nom_e] = {"ligne": ligne_etape, "point": pt, "label": lb}
 
         tk.Frame(wrap, bg=self.theme["border"], height=1).pack(fill="x")
 
@@ -1172,8 +1179,10 @@ class VoiceLingoApp:
         """Ligne d'information cle-valeur compacte."""
         f = tk.Frame(self.frame_droit_contenu, bg=self.theme["bg_panel"])
         f.pack(fill="x", pady=2)
-        tk.Label(f, text=cle, font=("Segoe UI", 8), fg=self.theme["fg_subtext"], bg=self.theme["bg_panel"]).pack(side="left")
-        tk.Label(f, text=valeur, font=("Segoe UI", 8, "bold"), fg=self.theme["fg_title"], bg=self.theme["bg_panel"]).pack(side="right")
+        tk.Label(f, text=cle, font=("Segoe UI", 8),
+                 fg=self.theme["fg_subtext"], bg=self.theme["bg_panel"]).pack(side="left")
+        tk.Label(f, text=valeur, font=("Segoe UI", 8, "bold"),
+                 fg=self.theme["fg_title"], bg=self.theme["bg_panel"]).pack(side="right")
 
     def _choisir_fichier(self):
         """Ouvre le dialogue de selection de fichier video."""
@@ -1193,11 +1202,13 @@ class VoiceLingoApp:
         try:
             taille = os.path.getsize(chemin)
         except OSError as e:
-            messagebox.showerror("Erreur fichier", f"Impossible d'acceder au fichier :\n{e}", parent=self.fenetre)
+            messagebox.showerror(
+                "Erreur fichier", f"Impossible d'acceder au fichier :\n{e}", parent=self.fenetre)
             return
 
         if taille > 4 * 1024 * 1024 * 1024:
-            messagebox.showwarning("Fichier volumineux", "Le fichier depasse 4 Go. Le traitement pourrait prendre du temps.", parent=self.fenetre)
+            messagebox.showwarning(
+                "Fichier volumineux", "Le fichier depasse 4 Go. Le traitement pourrait prendre du temps.", parent=self.fenetre)
 
         self.chemin_video = chemin
         self._afficher_vue_courante()
@@ -1212,7 +1223,8 @@ class VoiceLingoApp:
     def _demarrer_traitement(self):
         """Demarre le pipeline de transcription et traduction."""
         if not self.chemin_video:
-            messagebox.showwarning("Selection requise", "Veuillez selectionner une video.", parent=self.fenetre)
+            messagebox.showwarning("Selection requise",
+                                   "Veuillez selectionner une video.", parent=self.fenetre)
             return
 
         dossier_sortie = self.config.get("output_dir")
@@ -1288,7 +1300,8 @@ class VoiceLingoApp:
                 self.barre_progress.create_rectangle(0, 0, w, 10, fill=self.theme["progress_bg"], outline="")
                 filled_w = int(w * (pourcent / 100.0))
                 if filled_w > 0:
-                    self.barre_progress.create_rectangle(0, 0, filled_w, 10, fill=self.theme["progress_fill"], outline="")
+                    self.barre_progress.create_rectangle(
+                        0, 0, filled_w, 10, fill=self.theme["progress_fill"], outline="")
 
         for nom_e, deb, fin in ETAPES_PIPELINE:
             w_dict = self.widgets_etapes.get(nom_e)
@@ -1825,12 +1838,15 @@ class VoiceLingoApp:
         contenu.pack(fill="both", expand=True, padx=20, pady=16)
 
         def champ_combo(label, options, actuel, aide):
-            tk.Label(contenu, text=label, font=("Segoe UI", 9, "bold"), fg=self.theme["fg_title"], bg=self.theme["bg_panel"]).pack(anchor="w", pady=(8, 2))
+            tk.Label(contenu, text=label, font=("Segoe UI", 9, "bold"),
+                     fg=self.theme["fg_title"], bg=self.theme["bg_panel"]).pack(anchor="w", pady=(8, 2))
             var = tk.StringVar(value=actuel)
-            cb = ttk.Combobox(contenu, textvariable=var, values=options, state="readonly", font=("Segoe UI", 9))
+            cb = ttk.Combobox(contenu, textvariable=var, values=options,
+                              state="readonly", font=("Segoe UI", 9))
             cb.pack(fill="x")
             if aide:
-                tk.Label(contenu, text=aide, font=("Segoe UI", 7), fg=self.theme["fg_subtext"], bg=self.theme["bg_panel"]).pack(anchor="w", pady=(1, 4))
+                tk.Label(contenu, text=aide, font=("Segoe UI", 7),
+                         fg=self.theme["fg_subtext"], bg=self.theme["bg_panel"]).pack(anchor="w", pady=(1, 4))
             return var
 
         var_whisper = champ_combo(
@@ -1858,7 +1874,8 @@ class VoiceLingoApp:
             "600M = rapide et peu gourmand en RAM"
         )
 
-        tk.Label(contenu, text="Dossier de sortie par defaut", font=("Segoe UI", 9, "bold"), fg=self.theme["fg_title"], bg=self.theme["bg_panel"]).pack(anchor="w", pady=(10, 2))
+        tk.Label(contenu, text="Dossier de sortie par defaut", font=("Segoe UI", 9, "bold"),
+                 fg=self.theme["fg_title"], bg=self.theme["bg_panel"]).pack(anchor="w", pady=(10, 2))
         f_dir = tk.Frame(contenu, bg=self.theme["bg_panel"])
         f_dir.pack(fill="x", pady=(0, 16))
 
@@ -1872,7 +1889,8 @@ class VoiceLingoApp:
                 entree_dir.delete(0, "end")
                 entree_dir.insert(0, d)
 
-        tk.Button(f_dir, text="...", font=("Segoe UI", 8), bg=self.theme["bg_card"], fg=self.theme["fg_title"], padx=8, cursor="hand2", command=choisir_dir).pack(side="left", padx=(4, 0))
+        tk.Button(f_dir, text="...", font=("Segoe UI", 8),
+                  bg=self.theme["bg_card"], fg=self.theme["fg_title"], padx=8, cursor="hand2", command=choisir_dir).pack(side="left", padx=(4, 0))
 
         def enregistrer():
             self.config["whisper_model_size"] = var_whisper.get()
@@ -1882,7 +1900,8 @@ class VoiceLingoApp:
             save_config(self.config)
             self._rafraichir_panneau_droit()
             w.destroy()
-            messagebox.showinfo("Configuration sauvegardee", "Les parametres ont ete enregistres dans config.json.", parent=self.fenetre)
+            messagebox.showinfo("Configuration sauvegardee",
+                                "Les parametres ont ete enregistres dans config.json.", parent=self.fenetre)
 
         tk.Button(
             contenu,

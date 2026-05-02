@@ -105,8 +105,8 @@ def words_to_segments(liste_mots):
 
             segments.append({
                 "start": debut_segment,
-                "end":   fin_segment,
-                "text":  texte_actuel,
+                "end": fin_segment,
+                "text": texte_actuel,
             })
 
             # reinitialiser pour le segment suivant
@@ -181,8 +181,8 @@ def generate_srt(segments, chemin_sortie):
     with open(chemin_sortie, "w", encoding="utf-8-sig") as f:
         for numero, segment in enumerate(segments, start=1):
             debut_str = secondes_vers_srt(segment["start"])
-            fin_str   = secondes_vers_srt(segment["end"])
-            texte     = _couper_ligne_longue(segment.get("translated_text") or segment["text"])
+            fin_str = secondes_vers_srt(segment["end"])
+            texte = _couper_ligne_longue(segment.get("translated_text") or segment["text"])
 
             # format SRT standard
             f.write(f"{numero}\n")
@@ -240,6 +240,7 @@ def validate_srt(chemin_srt):
         if t_start is None or t_end is None:
             erreurs.append(f"Bloc {i+1}: format de timestamp invalide ({lignes[1]})")
         elif t_start >= t_end:
-            erreurs.append(f"Bloc {i+1}: timestamp debut ({parts[0].strip()}) superieur ou egal a fin ({parts[1].strip()})")
+            erreurs.append(
+                f"Bloc {i+1}: timestamp debut ({parts[0].strip()}) superieur ou egal a fin ({parts[1].strip()})")
 
     return erreurs

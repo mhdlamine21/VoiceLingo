@@ -36,8 +36,8 @@ def get_video_info_youtube(url):
         )
 
     options = {
-        "quiet":         True,
-        "no_warnings":   True,
+        "quiet": True,
+        "no_warnings": True,
         "skip_download": True,
     }
 
@@ -51,16 +51,16 @@ def get_video_info_youtube(url):
     if infos.get("_type") == "playlist":
         videos = infos.get("entries", [])
         return {
-            "type":    "playlist",
-            "title":   infos.get("title", "Playlist"),
+            "type": "playlist",
+            "title": infos.get("title", "Playlist"),
             "channel": infos.get("uploader", ""),
-            "count":   len(videos),
+            "count": len(videos),
         }
 
     # video unique
     duree = infos.get("duration", 0) or 0
-    heures   = int(duree // 3600)
-    minutes  = int((duree % 3600) // 60)
+    heures = int(duree // 3600)
+    minutes = int((duree % 3600) // 60)
     secondes = int(duree % 60)
 
     if heures > 0:
@@ -74,14 +74,14 @@ def get_video_info_youtube(url):
     toutes_langues = list(set(sous_titres + sous_titres_auto))
 
     return {
-        "type":             "video",
-        "title":            infos.get("title", ""),
-        "channel":          infos.get("uploader", ""),
-        "duration":         duree,
-        "duration_str":     duree_str,
-        "subtitles_langs":  toutes_langues,
-        "has_manual_subs":  bool(sous_titres),
-        "has_auto_subs":    bool(sous_titres_auto),
+        "type": "video",
+        "title": infos.get("title", ""),
+        "channel": infos.get("uploader", ""),
+        "duration": duree,
+        "duration_str": duree_str,
+        "subtitles_langs": toutes_langues,
+        "has_manual_subs": bool(sous_titres),
+        "has_auto_subs": bool(sous_titres_auto),
     }
 
 
@@ -97,10 +97,10 @@ def download_video(url, dossier_sortie, qualite="720p", progress_cb=None):
 
     # correspondance qualite -> format yt-dlp
     formats = {
-        "best":       "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
-        "1080p":      "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080]",
-        "720p":       "bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[height<=720]",
-        "480p":       "bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[height<=480]",
+        "best": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
+        "1080p": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080]",
+        "720p": "bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[height<=720]",
+        "480p": "bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[height<=480]",
         "audio_only": "bestaudio[ext=m4a]/bestaudio",
     }
     format_choisi = formats.get(qualite, formats["720p"])
@@ -111,10 +111,10 @@ def download_video(url, dossier_sortie, qualite="720p", progress_cb=None):
         if not progress_cb:
             return
         if d.get("status") == "downloading":
-            total   = d.get("total_bytes") or d.get("total_bytes_estimate", 0)
-            actuel  = d.get("downloaded_bytes", 0)
+            total = d.get("total_bytes") or d.get("total_bytes_estimate", 0)
+            actuel = d.get("downloaded_bytes", 0)
             vitesse = d.get("_speed_str", "").strip()
-            eta     = d.get("_eta_str", "").strip()
+            eta = d.get("_eta_str", "").strip()
             if total > 0:
                 pct = int(actuel * 100 / total)
                 progress_cb(pct, f"Telechargement {pct}% - {vitesse} - ETA {eta}")
@@ -124,11 +124,11 @@ def download_video(url, dossier_sortie, qualite="720p", progress_cb=None):
                 progress_cb(100, "Telechargement termine !")
 
     options = {
-        "format":              format_choisi,
-        "outtmpl":             os.path.join(dossier_sortie, "%(title)s.%(ext)s"),
-        "progress_hooks":      [hook_progression],
-        "quiet":               True,
-        "no_warnings":         True,
+        "format": format_choisi,
+        "outtmpl": os.path.join(dossier_sortie, "%(title)s.%(ext)s"),
+        "progress_hooks": [hook_progression],
+        "quiet": True,
+        "no_warnings": True,
         "merge_output_format": "mp4",
     }
 
@@ -162,14 +162,14 @@ def download_subtitles_only(url, dossier_sortie, langue="fr"):
         raise ImportError("Installez yt-dlp avec: pip install yt-dlp")
 
     options = {
-        "writesubtitles":    True,
+        "writesubtitles": True,
         "writeautomaticsub": True,
-        "subtitleslangs":    [langue],
-        "subtitlesformat":   "srt",
-        "skip_download":     True,
-        "outtmpl":           os.path.join(dossier_sortie, "%(title)s.%(ext)s"),
-        "quiet":             True,
-        "no_warnings":       True,
+        "subtitleslangs": [langue],
+        "subtitlesformat": "srt",
+        "skip_download": True,
+        "outtmpl": os.path.join(dossier_sortie, "%(title)s.%(ext)s"),
+        "quiet": True,
+        "no_warnings": True,
     }
 
     with yt_dlp.YoutubeDL(options) as ydl:
