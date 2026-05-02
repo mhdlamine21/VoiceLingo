@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+.venv
+
+# Modèles IA (trop lourds - 7+ Go)
+models/
+.cache/
+*.pt
+*.bin
+*.safetensors
+*.gguf
+
+# Fichiers temporaires audio
+*.wav
+*.tmp
+*.log
+temp/
+outputs/
+
+# Speaker WAVs personnels
+speaker_wavs/*.wav
+
+# Git
+.git/
+.gitignore
+
+# Docs et IDE
+docs/*.docx
+*.md
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Tests
+tests/
