@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Créer la release GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Créer la release GitHub automatiquement
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "VoiceLingo ${{ github.ref_name }}"
+          body: |
+            ## VoiceLingo ${{ github.ref_name }}
+
+            Application de traduction vidéo 100% locale.
+
+            ### Installation
+            ```bash
+            git clone https://github.com/${{ github.repository }}
+            cd voicelingo
+            pip install -r requirements.txt
+            python main.py
+            ```
+
+            ### Prérequis
+            - Python 3.10+
+            - FFmpeg installé dans le PATH
+          draft: false
+          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') }}
