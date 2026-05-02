@@ -1,45 +1,85 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:1"/>
+    <!-- Degradé Globe Bleu a Cyan -->
+    <linearGradient id="globeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="45%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0d9488" />
     </linearGradient>
+
+    <!-- Degradé Onde Vocale -->
     <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.6"/>
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1"/>
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#14b8a6" />
     </linearGradient>
+
+    <!-- Ombre legere -->
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.15" />
+    </filter>
+
+    <style>
+      .bg-fill { fill: transparent; }
+      .brand-title { fill: #0f172a; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-weight: 800; }
+      .brand-sub { fill: #475569; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-weight: 600; letter-spacing: 3px; }
+      .globe-border { stroke: url(#globeGrad); stroke-width: 5; fill: none; }
+      .wave-bar { fill: url(#waveGrad); }
+
+      /* Adaptation automatique au Mode Sombre */
+      @media (prefers-color-scheme: dark) {
+        .brand-title { fill: #f8fafc; }
+        .brand-sub { fill: #94a3b8; }
+      }
+    </style>
   </defs>
 
-  <!-- Fond rond avec dégradé -->
-  <rect width="200" height="200" rx="40" ry="40" fill="url(#bgGrad)"/>
+  <rect width="100%" height="100%" class="bg-fill" />
 
-  <!-- Icône microphone stylisé -->
-  <!-- Corps du micro -->
-  <rect x="82" y="38" width="36" height="64" rx="18" fill="white" opacity="0.95"/>
+  <g transform="translate(0, -5)" filter="url(#softGlow)">
+    <!-- Contour du Globe en bulle de dialogue -->
+    <path class="globe-border"
+          d="M 150 40 
+             A 62 62 0 1 1 120 156 
+             L 105 178 
+             L 134 163 
+             A 62 62 0 0 1 150 40 Z"
+          stroke-linecap="round" stroke-linejoin="round" />
 
-  <!-- Arc de connection micro -->
-  <path d="M 56 96 Q 56 138 100 138 Q 144 138 144 96"
-        stroke="white" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <!-- Continents stylises arriere-plan gauche (bleu) -->
+    <path d="M 112 60 Q 128 52 142 62 Q 138 78 126 84 Q 116 74 112 60 Z"
+          fill="#3b82f6" opacity="0.85" />
+    <path d="M 98 94 Q 110 88 118 98 Q 112 118 96 122 Q 92 108 98 94 Z"
+          fill="#2563eb" opacity="0.8" />
+    <path d="M 124 136 Q 132 128 140 134 Q 136 150 126 154 Z"
+          fill="#1d4ed8" opacity="0.8" />
 
-  <!-- Pied du micro -->
-  <line x1="100" y1="138" x2="100" y2="158" stroke="white" stroke-width="7" stroke-linecap="round"/>
-  <line x1="76" y1="158" x2="124" y2="158" stroke="white" stroke-width="7" stroke-linecap="round"/>
+    <!-- Continents stylises arriere-plan droite (teal) -->
+    <path d="M 158 56 Q 174 54 186 68 Q 182 86 168 88 Q 160 74 158 56 Z"
+          fill="#0d9488" opacity="0.85" />
+    <path d="M 172 96 Q 194 92 198 112 Q 188 132 174 126 Q 166 112 172 96 Z"
+          fill="#14b8a6" opacity="0.8" />
+    <path d="M 154 128 Q 170 126 174 142 Q 160 152 152 140 Z"
+          fill="#0f766e" opacity="0.8" />
 
-  <!-- Barres audio ondes (droite) -->
-  <rect x="152" y="72" width="8" height="56" rx="4" fill="url(#waveGrad)" opacity="0.85"/>
-  <rect x="164" y="84" width="8" height="32" rx="4" fill="url(#waveGrad)" opacity="0.65"/>
-  <rect x="176" y="92" width="8" height="16" rx="4" fill="url(#waveGrad)" opacity="0.45"/>
+    <!-- Fleche d'entree audio a gauche (->) -->
+    <path d="M 96 102 L 108 102 M 104 98 L 108 102 L 104 106"
+          stroke="#0284c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
 
-  <!-- Barres audio ondes (gauche) -->
-  <rect x="40" y="72" width="8" height="56" rx="4" fill="url(#waveGrad)" opacity="0.85"/>
-  <rect x="28" y="84" width="8" height="32" rx="4" fill="url(#waveGrad)" opacity="0.65"/>
-  <rect x="16" y="92" width="8" height="16" rx="4" fill="url(#waveGrad)" opacity="0.45"/>
+    <!-- Onde audio centrale (barres d'egaliseur de voix) -->
+    <g transform="translate(116, 102)">
+      <line x1="0"  y1="-10" x2="0"  y2="10" stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="6"  y1="-16" x2="6"  y2="16" stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="12" y1="-24" x2="12" y2="24" stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="18" y1="-30" x2="18" y2="30" stroke="url(#waveGrad)" stroke-width="4.0" stroke-linecap="round" />
+      <line x1="24" y1="-22" x2="24" y2="22" stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="30" y1="-14" x2="30" y2="14" stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="36" y1="-8"  x2="36" y2="8"  stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <line x1="42" y1="-2"  x2="42" y2="2"  stroke="url(#waveGrad)" stroke-width="3"   stroke-linecap="round" />
+    </g>
+  </g>
 
-  <!-- Texte VL en bas -->
-  <text x="100" y="190" text-anchor="middle"
-        font-family="Segoe UI, Arial, sans-serif"
-        font-size="11" font-weight="700"
-        fill="white" opacity="0.85" letter-spacing="3">
-    VOICELINGO
-  </text>
+  <!-- Typographie du Logo -->
+  <text x="150" y="224" text-anchor="middle" font-size="30" class="brand-title">VoiceLingo</text>
+  <text x="150" y="246" text-anchor="middle" font-size="9.5" class="brand-sub">VOICE - TRANSLATE - CONNECT</text>
 </svg>

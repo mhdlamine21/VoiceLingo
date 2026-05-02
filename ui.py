@@ -259,29 +259,48 @@ class VoiceLingoApp:
         self._construire_panneau_centre(self.corps)
         self._construire_panneau_droit(self.corps)
 
-    def _dessiner_logo_vectoriel(self, parent, size=36) -> tk.Canvas:
-        """Dessine le logo vectoriel sur un Canvas Tkinter sans dependances externes."""
+    def _dessiner_logo_vectoriel(self, parent, size=38):
+        """
+        Affiche le logo officiel VoiceLingo (globe, bulle et onde vocale)
+        avec adaptation automatique des couleurs selon le theme actif (sombre ou clair).
+        """
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        variant = "logo_icon_dark.png" if self.is_dark_mode else "logo_icon_light.png"
+        icon_path = os.path.join(base_dir, "assets", "icons", variant)
+        if not os.path.exists(icon_path):
+            icon_path = os.path.join(base_dir, "assets", "icons", "logo_icon.png")
+
+        if os.path.exists(icon_path):
+            try:
+                from PIL import Image, ImageTk
+                img = Image.open(icon_path)
+                w_ratio = size / max(img.size)
+                new_w = max(16, int(img.size[0] * w_ratio))
+                new_h = max(16, int(img.size[1] * w_ratio))
+                resized = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                photo = ImageTk.PhotoImage(resized)
+
+                lbl = tk.Label(parent, image=photo, bg=parent.cget("bg"))
+                lbl.image = photo  # Reference anti-garbage-collector
+                return lbl
+            except Exception:
+                pass
+
+        # Rendu Canvas vectoriel de secours
         c = tk.Canvas(parent, width=size, height=size, bg=parent.cget("bg"), highlightthickness=0)
+        cx, cy = size / 2.0, size / 2.0
+        r = size * 0.42
 
-        # Fond bouton bleu moderne
-        c.create_rectangle(1, 1, size - 1, size - 1, fill="#2563eb", outline="#60a5fa", width=1)
+        color_globe = "#38bdf8" if self.is_dark_mode else "#0284c7"
+        color_wave = "#2dd4bf" if self.is_dark_mode else "#14b8a6"
 
-        # Microphone central
-        cx = size / 2.0
-        cy = size / 2.0 - 2
+        c.create_oval(cx - r, cy - r, cx + r, cy + r, outline=color_globe, width=2)
+        c.create_polygon(cx - r * 0.7, cy + r * 0.5, cx - r * 0.9, cy + r * 0.95, cx - r * 0.3, cy + r * 0.8, fill=color_globe, outline="")
 
-        # Capsule micro
-        cw = size * 0.22
-        ch = size * 0.38
-        c.create_rectangle(cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2, fill="#ffffff", outline="")
-
-        # Arc de capture
-        arc_r = size * 0.24
-        c.create_arc(cx - arc_r, cy - arc_r, cx + arc_r, cy + arc_r, start=0, extent=-180, style="arc", outline="#ffffff", width=2)
-
-        # Pied et socle
-        c.create_line(cx, cy + arc_r, cx, cy + arc_r + 4, fill="#ffffff", width=2)
-        c.create_line(cx - 5, cy + arc_r + 4, cx + 5, cy + arc_r + 4, fill="#ffffff", width=2)
+        for i in range(-3, 4):
+            bx = cx + i * (size * 0.08)
+            h = (4 - abs(i)) * (size * 0.08)
+            c.create_line(bx, cy - h, bx, cy + h, fill=color_wave, width=2)
 
         return c
 
